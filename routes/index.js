@@ -6,6 +6,9 @@ const {dbUrl} = require("../config/dbConfig")
 const mongoose = require('mongoose');
 const {passwordEmail} = require("../service/passwordEmail")
 
+//frontend deployed link
+const url = "https://beautiful-shortbread-5030de.netlify.app"
+
 //connect to DB
 mongoose.connect(dbUrl)
 
@@ -95,7 +98,7 @@ router.post("/send-email", async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        message: `http://localhost:3000/reset-password/${user._id}/${setUserToken.token}`
+        message: `${url}/${user._id}/${setUserToken.token}`
       })
 
       res.status(200).send({
@@ -158,7 +161,7 @@ router.post("/change-password/:id", async (req, res) => {
     res.status(200).send({
       message: 'Password updated successfully'
     })
-    
+
   } catch (error) {
     console.log(error);
     res.status(500).send({

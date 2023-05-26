@@ -1,50 +1,49 @@
 const nodemailer = require('nodemailer');
-const nodemailergun = require('nodemailer-mailgun-transport');
 
 require('dotenv').config()
 
 const passwordEmail = async ({ email, firstName, lastName, message }) => {
-  
 
-  const auth = {
+  let mailTranspoter = nodemailer.createTransport({
+    service: "gmail",
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      api_key: process.env.APIKEY,
-      domain: process.env.DOMAIN
+      user: process.env.USER,
+      pass: process.env.PASSWORD
     }
-  }
+  })
 
-
-  let transporter = nodemailer.createTransport(nodemailergun(auth));
-
-  const mailOptions = {
-    from: 'ajeevishnu2026@gmail.com',
+  let details = {
+    from: process.env.USER,
     to: `${email}`,
     subject: "Reset password",
     html: ` <div style="background-color: antiquewhite; margin-left:25%; margin-right:25%; padding:20px;">
-        <div>
-          <b>Hello ${firstName} ${lastName},</b>
-        </div>
-        <br>
-        <br>
-        <div>
-          Expires in 30 mins-${message}
-        </div>
-        <br>
-        <footer style="text-align: center;">
-          <b>Thank you</b>
-        </footer>
-      </div>`
+      <div>
+        <b>Hello ${firstName} ${lastName},</b>
+      </div>
+      <br>
+      <br>
+      <div>
+        Expires in 30 mins-${message}
+      </div>
+      <br>
+      <footer style="text-align: center;">
+        <b>Thank you</b>
+      </footer>
+    </div>`
   }
 
-  transporter.sendMail(mailOptions, (err, data) => {
+
+  mailTranspoter.sendMail(details, (err) => {
     if (err) {
-      console.log('Error' + err);
+      console.log('Email not send' + err);
     } else {
       console.log('Email send');
     }
   })
 
-
 }
 
-module.exports =  {passwordEmail} 
+module.exports = { passwordEmail } 

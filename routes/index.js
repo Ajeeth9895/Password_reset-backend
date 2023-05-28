@@ -6,8 +6,7 @@ const {dbUrl} = require("../config/dbConfig")
 const mongoose = require('mongoose');
 const {passwordEmail} = require("../service/passwordEmail")
 
-//frontend deployed link
-const url = "https://beautiful-shortbread-5030de.netlify.app"
+
 
 //connect to DB
 mongoose.connect(dbUrl)
@@ -85,12 +84,14 @@ router.post("/send-email", async (req, res) => {
     let user = await UserModel.findOne({ email: req.body.email });
 
     if (user) {
-      let token = await forgetPasswordToken({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      });
+      
+      let firstName = user.firstName
+      let email = user.email
 
+      // creating token       
+      let token = jwt.sign({ firstName, email }, process.env.SECRETE_KEY_RESET, {
+        expiresIn:'10m'
+      });
       const setUserToken = await UserModel.findByIdAndUpdate({ _id: user._id }, { token: token });
 
 
@@ -98,7 +99,7 @@ router.post("/send-email", async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        message: `${url}/reset-password/${user._id}/${setUserToken.token}`
+        message: `https://beautiful-shortbread-5030de.netlify.app/reset-password/${user._id}/${setUserToken.token}`
       })
 
       res.status(200).send({

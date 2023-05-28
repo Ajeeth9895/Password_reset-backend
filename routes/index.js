@@ -5,7 +5,7 @@ const { hashPassword, hashCompare, createToken, decodeToken, validate, roleAdmin
 const {dbUrl} = require("../config/dbConfig")
 const mongoose = require('mongoose');
 const {passwordEmail} = require("../service/passwordEmail")
-
+const jwt = require("jsonwebtoken");
 
 
 //connect to DB

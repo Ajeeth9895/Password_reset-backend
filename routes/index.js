@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 //connect to DB
 mongoose.connect(dbUrl)
 
+let frontUrl = "https://beautiful-shortbread-5030de.netlify.app"
 
 //create user
 router.post('/signUp', async (req, res) => {
@@ -92,14 +93,13 @@ router.post("/send-email", async (req, res) => {
       let token = jwt.sign({ firstName, email }, process.env.SECRETE_KEY_RESET, {
         expiresIn:'10m'
       });
-      const setUserToken = await UserModel.findByIdAndUpdate({ _id: user._id }, { token: token });
-
+      
 
       await passwordEmail({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        message: `https://beautiful-shortbread-5030de.netlify.app/reset-password/${user._id}/${setUserToken.token}`
+        message: `${frontUrl}/reset-password/${user._id}/${token}`
       })
 
       res.status(200).send({
